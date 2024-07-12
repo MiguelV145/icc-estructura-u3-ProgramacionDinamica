@@ -1,7 +1,9 @@
 package Ejercicios.contorllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import Ejercicios.models.Celda;
 
 /*
@@ -35,6 +37,36 @@ import Ejercicios.models.Celda;
 public class Laberinto {
 
     public List<Celda> getPath(boolean[][] grid) {
-        throw new UnsupportedOperationException("No implementado aún");
+        Map<Celda, Boolean> cacheMap = new HashMap<>();
+        List<Celda> path = new ArrayList<>();
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return path;
+        }
+        if (getPath(grid, 0, 0, path, cacheMap)) {
+            return path;
+        }
+        return new ArrayList<>();
+    }
+    private boolean getPath(boolean[][] grid, int x, int y, List<Celda> path, Map<Celda, Boolean> cacheMap) {
+        if (x >= grid.length || y >= grid[0].length || !grid[x][y]) {
+            return false;
+        }
+        
+        Celda point = new Celda(x, y);
+
+        if (cacheMap.containsKey(point)) {
+            return cacheMap.get(point);
+        }
+
+        boolean isAtEnd = (x == grid.length - 1) && (y == grid[0].length - 1);
+        boolean succes =false;
+
+        if (isAtEnd || getPath(grid, x + 1, y, path, cacheMap) || getPath(grid, x, y + 1, path, cacheMap)) {
+            path.add(point);
+            succes =true;
+        }
+
+        cacheMap.put(point, false);
+        return  succes;
     }
 }
